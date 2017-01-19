@@ -48,7 +48,8 @@ bool render() {
   mat4 R;
   // *********************************
   // Create rotation matrix - rotate around Z axis by theta
-
+  float theta = radians(180.0f);
+  R = rotate(mat4(1.0f), theta/4, vec3(0.0f, 0.0f, 1.0f));  //R = rotate(mat4(1.0f), theta, vec3(1.0f, 0.0f, 0.0f));  //R = rotate(mat4(1.0f), theta, vec3(0.0f, 1.0f, 0.0f));
   // *********************************
   // Create MVP matrix
   auto V = cam.get_view();

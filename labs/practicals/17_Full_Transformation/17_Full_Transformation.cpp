@@ -74,10 +74,14 @@ bool render() {
   // *********************************
   // Create transformation matrices
   // ******************************
-
+  T = translate(mat4(1.0f), pos);
+  S = scale(mat4(1.0f), vec3(s, s, s));
+  R = rotate(mat4(1.0f), theta / 4, vec3(0.0f, 0.0f, 1.0f));
 
 
   // Combine matrices to set M - remember multiplication order
+
+  M = T * (R * S);
 
   // *********************************
   // Create MVP matrix

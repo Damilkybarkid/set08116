@@ -28,14 +28,16 @@ void create_sierpinski(geometry &geom) {
   for (auto i = 1; i < num_points; ++i) {
     // *********************************
     // Add random point
-
+	  auto n = dist(e);
+	  points = ((points - 1.0f) + v(n)) / 2.0f;
     // Add colour - all points red
-
+	  vector<vec4> colours{ vec4(1.0f, 0.0f, 0.0f, 1.0f), vec4(1.0f, 0.0f, 0.0f, 1.0f), vec4(1.0f, 0.0f, 0.0f, 1.0f) };
     // *********************************
   }
   // *********************************
   // Add buffers to geometry
-
+  geom.add_buffer(points, BUFFER_INDEXES::POSITION_BUFFER);
+  geom.add_buffer(colours, BUFFER_INDEXES::COLOUR_BUFFER);
 
   // *********************************
 }

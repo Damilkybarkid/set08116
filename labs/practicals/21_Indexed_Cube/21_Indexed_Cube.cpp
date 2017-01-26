@@ -17,8 +17,14 @@ bool load_content() {
   vector<vec3> positions{
       // *********************************
       // Add the position data for cube corners here (8 total)
-
-
+	  vec3(0.0f, 0.0f, 0.0f), //0
+	  vec3(0.0f, 1.0f, 0.0f), //1
+	  vec3(-1.0f, 1.0f, 0.0f), //2
+	  vec3(-1.0f, 0.0f, 0.0f), //3
+	  vec3(0.0f, 0.0f, -1.0f), //4
+	  vec3(0.0f, 1.0f, -1.0f), //5
+	  vec3(-1.0f, 1.0f, -1.0f), //6
+	  vec3(-1.0f, 0.0f, -1.0f), //7
 
       // *********************************
   };
@@ -32,16 +38,23 @@ bool load_content() {
       // *********************************
       // Add index information here - 3 per triangle, 6 per face, 12 triangles
       // Front
-
+	  0, 1, 2,
+	  2, 3, 0,
       // Back
-
+	  7, 6, 5,
+	  5, 4, 7,
       // Right
-
+	  4, 5, 1,
+	  1, 0, 4,
       // Left
-
+	  3, 2, 6,
+	  6, 7, 3,
       // Top
-
+	  1, 5, 6,
+	  6, 2, 1,
       // Bottom
+	  4, 0, 3,
+	  3, 7, 4
 
       // *********************************
   };

@@ -29,9 +29,11 @@ bool load_content() {
   // Create three mesh objects - reuse geometry
   for (auto &m : meshes) {
     // *********************************
-
+	  m = mesh(geom);
+	  
+	  
     // Scale each mesh by 10
-
+	  m.get_transform().scale = vec3(10.0f, 400.0f, 10.0f);
     // *********************************
   }
 
@@ -40,8 +42,8 @@ bool load_content() {
     meshes[i].get_transform().translate((static_cast<float>(i) * vec3(21.0f, 0.0f, 0.0f)) - vec3(21.0f, 0.0f, 0));
   }
   // Load in texture shaders, !Note that are pulling in shader file from previous project!
-  eff.add_shader("31_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
-  eff.add_shader("31_Texturing_Shader/simple_texture.frag", GL_FRAGMENT_SHADER);
+  eff.add_shader("27_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
+  eff.add_shader("27_Texturing_Shader/simple_texture.frag", GL_FRAGMENT_SHADER);
 
   // Build effect
   eff.build();
@@ -93,11 +95,11 @@ bool render() {
 
     // *********************************
     // Bind correct texture to renderer
-
+	renderer::bind(texs[i], 0);
     // Set the texture value for the shader here
-
+	glUniform1i(eff.get_uniform_location("tex"), 0);
     // Render the mesh
-
+	renderer::render(meshes[i]);
     // *********************************
   }
 

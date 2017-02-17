@@ -10,40 +10,41 @@ effect eff;
 texture tex;
 target_camera cam;
 
+
 bool load_content() {
   // Create plane mesh
   meshes["plane"] = mesh(geometry_builder::create_plane());
 
   // *********************************
   // box
-
+  meshes["box"] = mesh(geometry_builder::create_box());
   // Tetrahedron
-
+  meshes["tetrahedron"] = mesh(geometry_builder::create_tetrahedron());
   // Pyramid
-
+  meshes["pyramid"] = mesh(geometry_builder::create_pyramid());
   // Disk
-
+  meshes["disk"] = mesh(geometry_builder::create_disk(unsigned int(20)));
   // Cylinder
-
+  meshes["cylinder"] = mesh(geometry_builder::create_cylinder(unsigned int(20), unsigned int(20)));
   // Sphere
-
+  meshes["sphere"] = mesh(geometry_builder::create_sphere(unsigned int(20), unsigned int(20)));
   // Torus
-
+  meshes["torus"] = mesh(geometry_builder::create_torus(unsigned int(20), unsigned int(20), float(1.0f), float(5.0f)));
 
   // Set the transforms for your meshes here
   // 5x scale, move(-10.0f, 2.5f, -30.0f)
-
-
+  meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+  meshes["box"].get_transform().position = vec3(-10.0f, 2.5f, -30.0f);
   // 4x scale, move(-30.0f, 10.0f, -10.0f)
-
-
+  meshes["tetrahedron"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
+  meshes["tetrahedron"].get_transform().position = vec3(-30.0f, 10.0f, -10.0f);
   // 5x scale, move(-10.0f, 7.5f, -30.0f)
-
-
+  meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+  meshes["pyramid"].get_transform().position = vec3(-10.0f, 7.5f, -30.0f);
   // scale(3.0f, 1.0f, 3.0f), move(-10.0f, 11.5f, -30.0f), 180 rotate X axis
-
-
-
+  meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+  meshes["disk"].get_transform().position = vec3(-10.0f, 11.5f, -30.0f);
+  meshes["disk"].get_transform().rotate = (180, 1, 0, 0);
   // 5x scale, move(-25.0f, 2.5f, -25.0f)
 
 
@@ -114,4 +115,9 @@ void main() {
   application.set_render(render);
   // Run application
   application.run();
+}
+
+unsigned int slices()
+{
+	return 0;
 }

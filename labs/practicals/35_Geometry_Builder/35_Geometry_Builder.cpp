@@ -36,15 +36,15 @@ bool load_content() {
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().position = vec3(-10.0f, 2.5f, -30.0f);
   // 4x scale, move(-30.0f, 10.0f, -10.0f)
-  meshes["tetrahedron"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
-  meshes["tetrahedron"].get_transform().position = vec3(-30.0f, 10.0f, -10.0f);
+  //meshes["tetrahedron"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
+  //meshes["tetrahedron"].get_transform().position = vec3(-30.0f, 10.0f, -10.0f);
   // 5x scale, move(-10.0f, 7.5f, -30.0f)
-  meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["pyramid"].get_transform().position = vec3(-10.0f, 7.5f, -30.0f);
+  //meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+  //meshes["pyramid"].get_transform().position = vec3(-10.0f, 7.5f, -30.0f);
   // scale(3.0f, 1.0f, 3.0f), move(-10.0f, 11.5f, -30.0f), 180 rotate X axis
-  meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
-  meshes["disk"].get_transform().position = vec3(-10.0f, 11.5f, -30.0f);
-  meshes["disk"].get_transform().rotate = (180, 1, 0, 0);
+  //meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+  //meshes["disk"].get_transform().position = vec3(-10.0f, 11.5f, -30.0f);
+ // meshes["disk"].get_transform().rotate = (180, 1, 0, 0);
   // 5x scale, move(-25.0f, 2.5f, -25.0f)
 
 
@@ -95,9 +95,9 @@ bool render() {
 
     // *********************************
     // Bind texture to renderer
-
+	renderer::bind(tex, 0);
     // Set the texture value for the shader here
-
+	glUniform1i(eff.get_uniform_location("tex"), 0);
     // *********************************
     // Render mesh
     renderer::render(m);
@@ -115,9 +115,4 @@ void main() {
   application.set_render(render);
   // Run application
   application.run();
-}
-
-unsigned int slices()
-{
-	return 0;
 }

@@ -15,7 +15,7 @@ double cursor_y = 0.0;
 bool initialise() {
   // *********************************
   // Set input mode - hide the cursor
-
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   // Capture initial mouse position
 
   // *********************************
@@ -71,29 +71,43 @@ bool load_content() {
 
 bool update(float delta_time) {
   // The ratio of pixels to rotation - remember the fov
-  static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
-  static double ratio_height =
-      (quarter_pi<float>() *
-       (static_cast<float>(renderer::get_screen_height()) / static_cast<float>(renderer::get_screen_width()))) /
-      static_cast<float>(renderer::get_screen_height());
-
-  double current_x;
-  double current_y;
+	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
+	static double ratio_height =
+		(quarter_pi<float>() * renderer::get_screen_aspect()) / static_cast<float>(renderer::get_screen_height());
+	static double cursor_x = 0.0;
+	static double cursor_y = 0.0;
+	double current_x;
+	double current_y;
   // *********************************
   // Get the current cursor position
-
+  glfwGetCursorPos(renderer::get_window(), &current_x, &current_y);
   // Calculate delta of cursor positions from last frame
-
+  double delta_x = current_x - cursor_x;
+  double delta_y = current_y - cursor_y;
 
   // Multiply deltas by ratios - gets actual change in orientation
-
+  delta_x *= ratio_width;
+  delta_y *= ratio_height;
 
   // Rotate cameras by delta
   // delta_y - x-axis rotation
   // delta_x - y-axis rotation
+  cam.rotate(delta_x, -delta_y);
 
   // Use keyboard to move the camera - WSAD
-
+  vec3 translation(0.0f, 0.0f, 0.0f);
+  if (glfwGetKey(renderer::get_window(), 'W')) {
+	  translation.z += 5.0f * delta_time;
+  }
+  if (glfwGetKey(renderer::get_window(), 'S')) {
+	  translation.z -= 5.0f * delta_time;
+  }
+  if (glfwGetKey(renderer::get_window(), 'A')) {
+	  translation.x -= 5.0f * delta_time;
+  }
+  if (glfwGetKey(renderer::get_window(), 'D')) {
+	  translation.x += 5.0f * delta_time;
+  }
 
 
 
@@ -107,11 +121,12 @@ bool update(float delta_time) {
 
 
   // Move camera
-
+  cam.move(translation);
   // Update the camera
-
+  cam.update(delta_time);
   // Update cursor pos
-
+  cursor_x = current_x;
+  cursor_y = current_y;
 
   // *********************************
   return true;

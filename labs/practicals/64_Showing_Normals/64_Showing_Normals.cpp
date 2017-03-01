@@ -1,4 +1,4 @@
-#include <glm\glm.hpp>
++#-include <glm\glm.hpp>
 #include <graphics_framework.h>
 
 using namespace std;

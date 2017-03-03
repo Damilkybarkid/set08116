@@ -9,45 +9,98 @@ map<string, mesh> meshes;
 effect eff;
 texture tex;
 texture tex2;
-//target_camera cam;
-free_camera cam2;
+texture tex3;
+texture tex4;
+free_camera cam;
+point_light light;
 
-bool initialise() {
-	// Set input mode - hide the cursor
-	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	return true;
-}
 bool load_content() {
 	// Create plane mesh
-	meshes["plane"] = mesh(geometry_builder::create_plane());
+	meshes["floor_plane"] = mesh(geometry_builder::create_plane());
 
-	// Sphere
+	// Create sphere mesh
 	meshes["sphere"] = mesh(geometry_builder::create_sphere(unsigned int(20), unsigned int(20)));
 
-	// Table
-	meshes["table"] = mesh(geometry("models/Table.obj"));
+	// Create table mesh - 4 legs and the top
+	meshes["table_leg1"] = mesh(geometry_builder::create_cylinder(unsigned int(20), unsigned int(20)));
+	meshes["table_leg2"] = mesh(geometry_builder::create_cylinder(unsigned int(20), unsigned int(20)));
+	meshes["table_leg3"] = mesh(geometry_builder::create_cylinder(unsigned int(20), unsigned int(20)));
+	meshes["table_leg4"] = mesh(geometry_builder::create_cylinder(unsigned int(20), unsigned int(20)));
+	meshes["table_top"] = mesh(geometry_builder::create_box());
 
-	// Chair
+	// Create chair mesh
 	meshes["chair"] = mesh(geometry("models/chair.obj"));
 
-	// Set the transforms for your meshes here
+	// Set transforms for meshes and emissive, diffuse, specular and shininess values
 
 	// plane
-	meshes["plane"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["floor_plane"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
 
-	// Sphere
+	// sphere
 	meshes["sphere"].get_transform().scale = vec3(2.50f, 2.50f, 2.50f);
-	meshes["sphere"].get_transform().position = vec3(-50.0f, 5.0f, -25.0f);
+	meshes["sphere"].get_transform().position = vec3(-12.5f, 21.0f, 2.5f);
+	meshes["sphere"].get_material().set_emissive(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	meshes["sphere"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_shininess(25.0f);
 
-	// Table
-	//meshes["table"].get_transform().position = vec3(-50.0f, 50.0f, -25.0f);
-	//meshes["table"].get_transform().scale = vec3(1.0f, 1.0f, 1.0f);
-	//meshes["table"].get_transform().rotate(vec3(135.0f, 5.0f, 0.0f));
+	// table
+	meshes["table_leg1"].get_transform().scale = vec3(2.5f, 18.0f, 2.5f);
+	meshes["table_leg1"].get_transform().position = vec3(-25.0f, 9.0f, -15.0f);
+	meshes["table_leg1"].get_material().set_emissive(vec4(0.25f, 0.25f, 0.25f, 1.0f));
+	meshes["table_leg1"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg1"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg1"].get_material().set_shininess(25.0f);
 
-	// Load texture
-	tex = texture("textures/CGRright_202_color.jpg");
-	tex2 = texture("textures/Wooden_Table_1_default.png");
+	meshes["table_leg2"].get_transform().scale = vec3(2.5f, 18.0f, 2.5f);
+	meshes["table_leg2"].get_transform().position = vec3(0.0f, 9.0f, -15.0f);
+	meshes["table_leg2"].get_material().set_emissive(vec4(0.25f, 0.25f, 0.25f, 1.0f));
+	meshes["table_leg2"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg2"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg2"].get_material().set_shininess(25.0f);
+
+	meshes["table_leg3"].get_transform().scale = vec3(2.5f, 18.0f, 2.5f);
+	meshes["table_leg3"].get_transform().position = vec3(-25.0f, 9.0f, 20.0f);
+	meshes["table_leg3"].get_material().set_emissive(vec4(0.25f, 0.25f, 0.25f, 1.0f));
+	meshes["table_leg3"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg3"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg3"].get_material().set_shininess(25.0f);
+
+	meshes["table_leg4"].get_transform().scale = vec3(2.5f, 18.0f, 2.5f);
+	meshes["table_leg4"].get_transform().position = vec3(0.0f, 9.0f, 20.0f);
+	meshes["table_leg4"].get_material().set_emissive(vec4(0.25f, 0.25f, 0.25f, 1.0f));
+	meshes["table_leg4"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg4"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_leg4"].get_material().set_shininess(25.0f);
+
+	meshes["table_top"].get_transform().scale = vec3(29.5f, 2.5f, 40.0f);
+	meshes["table_top"].get_transform().position = vec3(-12.5f, 17.0f, 2.5f);
+	meshes["table_top"].get_material().set_emissive(vec4(0.25f, 0.25f, 0.25f, 1.0f));
+	meshes["table_top"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_top"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["table_top"].get_material().set_shininess(25.0f);
+
+	// chair
+	meshes["chair"].get_transform().position = vec3(-8.0f, 10.5f, -30.0f);
+	meshes["chair"].get_material().set_emissive(vec4(0.25f, 0.25f, 0.25f, 1.0f));
+	meshes["chair"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["chair"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["chair"].get_material().set_shininess(25.0f);
+
+	// Load textures
+	tex = texture("textures/seamless_24_pvqcu.jpg");
+	tex2 = texture("textures/wood_plain_210_251_Small.jpg");
+	tex3 = texture("textures/wood_plain_211_252_Small.jpg");
+	tex4 = texture("textures/morning_sun_texture_by_xjillvalentinex-d5v1668.jpg");
+
+	// Set lighting values
+
+	// Position
+	light.set_position(vec3(-12.5, 24.5, 2.5));
+	// Light colour white
+	light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	// Set range 
+	light.set_range(500);
 
 	// Load in shaders
 	eff.add_shader("shaders/coursework.vert", GL_VERTEX_SHADER);
@@ -56,27 +109,18 @@ bool load_content() {
 	eff.build();
 
 	// Set camera properties
-	cam2.set_position(vec3(10.0f, 10.0f, 10.0f));
-	cam2.set_target(vec3(-100.0f, 0.0f, -100.0f));
+	cam.set_position(vec3(10.0f, 10.0f, 10.0f));
+	cam.set_target(vec3(-100.0f, 0.0f, -100.0f));
 	auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
-	cam2.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
+	cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	return true;
 }
 
 
 bool update(float delta_time) {
-	//if (glfwGetKey(renderer::get_window(), '1')) {
-		//cam.set_position(vec3(10.0f, 10.0f, 10.0f));
-	//}
-	//if (glfwGetKey(renderer::get_window(), '2')) {
-		//cam.set_position(vec3(-10.0f, 10.0f, 10.0f));
-	//}
-	//if (glfwGetKey(renderer::get_window(), '3')) {
-		//cam.set_position(vec3(-50, 10, -50));
-	//}
-	//if (glfwGetKey(renderer::get_window(), '4')) {
-		//cam.set_position(vec3(50, 10, -50));
-	//}
+	// Set free cam details
+
 	// The ratio of pixels to rotation - remember the fov
 	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
 	static double ratio_height =
@@ -94,7 +138,7 @@ bool update(float delta_time) {
 	delta_x *= ratio_width;
 	delta_y *= ratio_height;
 	// Rotate cameras by delta
-	cam2.rotate(delta_x, -delta_y);
+	cam.rotate(delta_x, -delta_y);
 	// Use keyboard to move the camera - WASD
 	vec3 translation(0.0f, 0.0f, 0.0f);
 	if (glfwGetKey(renderer::get_window(), 'W')) {
@@ -110,9 +154,9 @@ bool update(float delta_time) {
 		translation.x += 50.0f * delta_time;
 	}
 	// Move camera
-	cam2.move(translation);
+	cam.move(translation);
 	// Update the camera
-	cam2.update(delta_time);
+	cam.update(delta_time);
 	// Update cursor pos
 	cursor_x = current_x;
 	cursor_y = current_y;
@@ -127,18 +171,22 @@ bool render() {
 		renderer::bind(eff);
 		// Create MVP matrix
 		auto M = m.get_transform().get_transform_matrix();
-		auto V = cam2.get_view();
-		auto P = cam2.get_projection();
+		auto V = cam.get_view();
+		auto P = cam.get_projection();
 		auto MVP = P * V * M;
 		// Set MVP matrix uniform
 		glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-		// Set material colour 
-		glUniform4fv(eff.get_uniform_location("material_colour"), 1, value_ptr(vec4(1.0f, 1.0f, 1.0f, 1.0f)));
-		// Set ambient intensity - (0.3, 0.3, 0.3, 1.0)
-		glUniform4fv(eff.get_uniform_location("ambient_intensity"), 1, value_ptr(vec4(0.1f, 0.1f, 0.1f, 0.1f)));
-		// *********************************
-		// Bind texture to renderer
-		if (e.first == "plane")
+		// Set M matrix uniform
+		glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
+		// Set N matrix uniform 
+		glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(m.get_transform().get_normal_matrix()));
+		// Bind material
+		renderer::bind(m.get_material(), "mat");
+		// Bind light
+		renderer::bind(light, "point");
+
+		// Bind textures to renderer
+		if (e.first == "floor_plane")
 		{
 			renderer::bind(tex, 0);
 		}
@@ -146,15 +194,24 @@ bool render() {
 		{
 			renderer::bind(tex2, 0);
 		}
-		
-		// Set the texture value for the shader here
+		if (e.first == "chair")
+		{
+			renderer::bind(tex3, 0);
+		}
+		if (e.first == "sphere")
+		{
+			renderer::bind(tex4, 0);
+		}
+
+		// Set texture values for shader
 		glUniform1i(eff.get_uniform_location("tex"), 0);
-		glUniform1i(eff.get_uniform_location("tex2"), 1 );
-		// *********************************
+		glUniform1i(eff.get_uniform_location("tex2"), 1);
+		glUniform1i(eff.get_uniform_location("tex3"), 2);
+		glUniform1i(eff.get_uniform_location("tex4"), 3);
+
 		// Render mesh
 		renderer::render(m);
 	}
-
 	return true;
 }
 
@@ -163,7 +220,6 @@ void main() {
   app application("Graphics Coursework");
   // Set load content, update and render methods
   application.set_load_content(load_content);
-  application.set_initialise(initialise);
   application.set_update(update);
   application.set_render(render);
   // Run application

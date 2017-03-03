@@ -52,7 +52,7 @@ bool load_content() {
   meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["box"].get_material().set_shininess(25.0f);
   // Green tetra
-  meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["tetra"].get_material().set_emissive(vec4(1.0f, 1.0f, 0.0f, 1.0f));
   meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
   meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["tetra"].get_material().set_shininess(25.0f);
@@ -88,11 +88,11 @@ bool load_content() {
   tex = texture("textures/checker.png");
   // *********************************
   // Set lighting values, Position (-25, 10, -10)
-  light.set_position(vec3(-25.0f, 10.0f, -10.0f));
+  light.set_position(vec3(-25, 10, -10));
   // Light colour white
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   // Set range to 20
-  light.set_range(20.0f);
+  light.set_range(2000);
   // Load in shaders
   eff.add_shader("49_Point_Light/point.vert", GL_VERTEX_SHADER);
   eff.add_shader("49_Point_Light/point.frag", GL_FRAGMENT_SHADER);
@@ -185,7 +185,7 @@ bool render() {
     // Bind material
 	renderer::bind(m.get_material(), "mat");
     // Bind light
-	renderer::bind(light, "light");
+	renderer::bind(light, "point");
     // Bind texture
 	renderer::bind(tex, 0);
     // Set tex uniform

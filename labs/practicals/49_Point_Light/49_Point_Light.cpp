@@ -77,11 +77,11 @@ bool load_content() {
   meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["sphere"].get_material().set_shininess(25.0f);
   // White torus
-  meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+ 
+ meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
   meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["torus"].get_material().set_shininess(25.0f);
-
   // *********************************
 
   // Load texture
@@ -92,7 +92,7 @@ bool load_content() {
   // Light colour white
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   // Set range to 20
-  light.set_range(2000);
+  light.set_range(20);
   // Load in shaders
   eff.add_shader("49_Point_Light/point.vert", GL_VERTEX_SHADER);
   eff.add_shader("49_Point_Light/point.frag", GL_FRAGMENT_SHADER);

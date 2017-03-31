@@ -162,6 +162,7 @@ bool load_content() {
   return true;
 }
 
+
 bool update(float delta_time) {
   if (glfwGetKey(renderer::get_window(), '1')) {
     cam.set_position(vec3(50, 10, 50));
@@ -210,7 +211,6 @@ bool render() {
 	renderer::bind(points, "points");
     // Bind spot lights
 	renderer::bind(spots, "spots");
-
     // Bind texture
 	renderer::bind(tex, 0);
     // Set tex uniform

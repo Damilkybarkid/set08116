@@ -1,4 +1,4 @@
-#version 440
+	#version 440
 
 // This shader requires direction.frag, point.frag and spot.frag
 
@@ -71,9 +71,9 @@ uniform vec3 eye_pos;
 uniform sampler2D tex;
 
 // Incoming position
-layout(location = 0) in vec3 position;
+layout(location = 0) in vec3 vertex_position;
 // Incoming normal
-layout(location = 1) in vec3 normal;
+layout(location = 1) in vec3 transformed_normal;
 // Incoming texture coordinate
 layout(location = 2) in vec2 tex_coord;
 
@@ -83,9 +83,9 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Calculate view direction
-
+  vec3 view_dir = normalize(eye_pos-vertex_position);
   // Sample texture
-
+  vec4 tex_colour = texture(tex, tex_coord);
   // Calculate directional light colour
 
   // Sum point lights

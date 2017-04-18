@@ -29,5 +29,6 @@ void main() {
   transformed_normal = N * normal;
   vertex_position = vec3(M * vec4(position, 1.0));
   tex_coord_out = tex_coord_in;
+
   // *********************************
 }

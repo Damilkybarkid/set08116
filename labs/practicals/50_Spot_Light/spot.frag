@@ -49,7 +49,7 @@ void main() {
   // Calculate spot light intensity
   float spot_intensity = pow(max(dot(-spot.direction, light_direction), 0.0), spot.power);
   // Calculate light colour
-  vec4 light_colour = spot.light_colour/af;
+  vec4 light_colour = (spot_intensity/af) * spot.light_colour;
   // Calculate view direction
   vec3 view_dir = normalize(eye_pos-vertex_position);
   // Now use standard phong shading but using calculated light colour and direction

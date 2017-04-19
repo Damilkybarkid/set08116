@@ -93,7 +93,7 @@ bool render() {
   // Clear depth buffer bit
 	glClear(GL_DEPTH_BUFFER_BIT);
   // Set render mode to cull face
-	glRenderMode(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
   // *********************************
 
   // Bind shader

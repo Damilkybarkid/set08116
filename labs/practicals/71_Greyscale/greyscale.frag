@@ -17,10 +17,11 @@ void main() {
   // Sample texture colour
   vec4 tex_colour = texture(tex, tex_coord);
   // Calculate grey value
-  float grey_value = dot(vec4(intensity, 1.0), tex_colour);
+  float grey_value = (tex_colour.r + tex_colour.g + tex_colour.b) / 3.0;
+  vec3 greyscale = vec3(grey_value);
   // Use greyscale to as final colour
   // - ensure alpha is 1
-  colour = grey_value;
   colour.a = 1.0;
+  colour = vec4(greyscale, colour.a);
   // *********************************
 }

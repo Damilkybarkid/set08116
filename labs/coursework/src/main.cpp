@@ -183,7 +183,7 @@ bool render() {
 		// Bind material
 		renderer::bind(m.get_material(), "mat");
 		// Bind light
-		renderer::bind(light, "point");
+		renderer::bind(light, "points");
 
 		// Bind textures to renderer
 		if (e.first == "floor_plane")

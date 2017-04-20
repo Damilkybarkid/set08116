@@ -7,14 +7,35 @@ using namespace glm;
 
 map<string, mesh> meshes;
 effect eff;
+effect tex_eff;
+effect grey_eff;
 texture tex;
 texture tex2;
 texture tex3;
 texture tex4;
+texture alpha_map;
 free_camera cam;
 point_light light;
+frame_buffer frame;
+geometry screen_quad;
+bool maskCheck = false;
+bool greyscaleCheck = false;
 
 bool load_content() {
+	// Create frame buffer - use screen width and height
+	frame = frame_buffer(renderer::get_screen_width(), renderer::get_screen_height());
+
+	// Create screen quad
+	vector<vec3> positions{ vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f), vec3(-1.0f, 1.0f, 0.0f),
+		vec3(1.0f, 1.0f, 0.0f) };
+	vector<vec2> tex_coords{ vec2(0.0, 0.0), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f, 1.0f) };
+	screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+	screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+	screen_quad.set_type(GL_TRIANGLE_STRIP);
+
+	screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+	screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+
 	// Create plane mesh
 	meshes["floor_plane"] = mesh(geometry_builder::create_plane());
 
@@ -93,6 +114,9 @@ bool load_content() {
 	tex3 = texture("textures/wood_plain_211_252_Small.jpg");
 	tex4 = texture("textures/morning_sun_texture_by_xjillvalentinex-d5v1668.jpg");
 
+	// Load in alpha map
+	alpha_map = texture("textures/smiley.png");
+
 	// Set lighting values
 
 	// Position
@@ -105,8 +129,19 @@ bool load_content() {
 	// Load in shaders
 	eff.add_shader("shaders/coursework.vert", GL_VERTEX_SHADER);
 	eff.add_shader("shaders/coursework.frag", GL_FRAGMENT_SHADER);
+
+	// Change the fragment shader to mask
+	tex_eff.add_shader("shaders/simple_texture.vert", GL_VERTEX_SHADER);
+	tex_eff.add_shader("shaders/mask.frag", GL_FRAGMENT_SHADER);
+
+	// Change the fragment shader to greyscale
+	grey_eff.add_shader("shaders/simple_texture.vert", GL_VERTEX_SHADER);
+	grey_eff.add_shader("shaders/greyscale.frag", GL_FRAGMENT_SHADER);
+
 	// Build effect
 	eff.build();
+	tex_eff.build();
+	grey_eff.build();
 
 	// Set camera properties
 	cam.set_position(vec3(10.0f, 10.0f, 10.0f));
@@ -114,11 +149,34 @@ bool load_content() {
 	auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
 	cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
 	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	return true;
 }
 
 
 bool update(float delta_time) {
+	// Implement masking post-process
+	if (glfwGetKey(renderer::get_window(), 'M')) 
+	{
+		maskCheck = true;
+	}
+
+	if (glfwGetKey(renderer::get_window(), 'N'))
+	{
+		maskCheck = false;
+	}
+
+	// Implement greyscale post-process
+	if (glfwGetKey(renderer::get_window(), 'G'))
+	{
+		greyscaleCheck = true;
+	}
+	
+	if (glfwGetKey(renderer::get_window(), 'F'))
+	{
+		greyscaleCheck = false;
+	}
+
 	// Set free cam details
 
 	// The ratio of pixels to rotation - remember the fov
@@ -164,6 +222,23 @@ bool update(float delta_time) {
 }
 
 bool render() {
+	if (maskCheck == true)
+	{
+		// Set render target to frame buffer
+		renderer::set_render_target(frame);
+
+		// Clear frame
+		renderer::clear();
+	}
+
+	if (greyscaleCheck == true)
+	{
+		// Set render target to frame buffer
+		renderer::set_render_target(frame);
+
+		// Clear frame
+		renderer::clear();
+	}
 	// Render meshes
 	for (auto &e : meshes) {
 		auto m = e.second;
@@ -212,6 +287,49 @@ bool render() {
 		// Render mesh
 		renderer::render(m);
 	}
+
+	if (maskCheck == true || greyscaleCheck == true)
+	{
+		// Set render target back to the screen
+		renderer::set_render_target();
+	}
+
+	if (maskCheck == true)
+	{
+		// Bind Tex effect
+		renderer::bind(tex_eff);
+		// MVP is now the identity matrix
+		auto MVP = glm::mat4();
+		// Set MVP matrix uniform
+		glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+		// Bind texture from frame buffer to TU 0
+		renderer::bind(frame.get_frame(), 0);
+		// Set the tex uniform, 0
+		glUniform1i(tex_eff.get_uniform_location("tex"), 0);
+		// Bind alpha texture to TU, 1
+		renderer::bind(alpha_map, 1);
+		// Set the tex uniform, 1
+		glUniform1i(tex_eff.get_uniform_location("tex"), 1);
+		// Render the screen quad
+		renderer::render(screen_quad);
+	}
+
+	if (greyscaleCheck == true)
+	{
+		// Bind Tex effect
+		renderer::bind(grey_eff);
+		// MVP is now the identity matrix
+		auto MVP = glm::mat4();
+		// Set MVP matrix uniform
+		glUniformMatrix4fv(grey_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+		// Bind texture from frame buffer
+		renderer::bind(frame.get_frame(), 0);
+		// Set the tex uniform
+		glUniform1i(grey_eff.get_uniform_location("tex"), 0);
+		// Render the screen quad
+		renderer::render(screen_quad);
+	}
+
 	return true;
 }
 

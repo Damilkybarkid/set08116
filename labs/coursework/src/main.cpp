@@ -222,6 +222,7 @@ bool update(float delta_time) {
 }
 
 bool render() {
+	// Used for the masking effect 
 	if (maskCheck == true)
 	{
 		// Set render target to frame buffer
@@ -230,7 +231,8 @@ bool render() {
 		// Clear frame
 		renderer::clear();
 	}
-
+	
+	// Used for the greyscale effect
 	if (greyscaleCheck == true)
 	{
 		// Set render target to frame buffer
@@ -239,15 +241,19 @@ bool render() {
 		// Clear frame
 		renderer::clear();
 	}
+
+	// Get the V and P for the MVP matrix (outside the for loop to reduce CPU usage)
+	auto V = cam.get_view();
+	auto P = cam.get_projection();
+
+	// Bind the texture effect (outside the for loop to reduce CPU usage)
+	renderer::bind(eff);
+
 	// Render meshes
 	for (auto &e : meshes) {
 		auto m = e.second;
-		// Bind effect
-		renderer::bind(eff);
 		// Create MVP matrix
 		auto M = m.get_transform().get_transform_matrix();
-		auto V = cam.get_view();
-		auto P = cam.get_projection();
 		auto MVP = P * V * M;
 		// Set MVP matrix uniform
 		glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
@@ -257,8 +263,6 @@ bool render() {
 		glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(m.get_transform().get_normal_matrix()));
 		// Bind material
 		renderer::bind(m.get_material(), "mat");
-		// Bind light
-		renderer::bind(light, "point");
 
 		// Bind textures to renderer
 		if (e.first == "floor_plane")
@@ -288,15 +292,19 @@ bool render() {
 		renderer::render(m);
 	}
 
+	// Bind light (outside the for loop to reduce CPU usage)
+	renderer::bind(light, "point");
+
 	if (maskCheck == true || greyscaleCheck == true)
 	{
 		// Set render target back to the screen
 		renderer::set_render_target();
 	}
 
+	// Render the mask effect
 	if (maskCheck == true)
 	{
-		// Bind Tex effect
+		// Bind Mask effect
 		renderer::bind(tex_eff);
 		// MVP is now the identity matrix
 		auto MVP = glm::mat4();
@@ -314,9 +322,10 @@ bool render() {
 		renderer::render(screen_quad);
 	}
 
+	// Render the greyscale effect
 	if (greyscaleCheck == true)
 	{
-		// Bind Tex effect
+		// Bind Grey effect
 		renderer::bind(grey_eff);
 		// MVP is now the identity matrix
 		auto MVP = glm::mat4();
